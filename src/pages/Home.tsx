@@ -13,14 +13,6 @@ const Home = () => {
       direction="column"
       gap={20}
     >
-      <Flex gap={20}>
-        <Box cursor="pointer" onClick={() => navigate('/home/about')}>
-          Go About Page
-        </Box>
-        <Box cursor="pointer" onClick={() => navigate('/home/profile')}>
-          Go Profile Page
-        </Box>
-      </Flex>
       <Outlet />
     </Flex>
   )

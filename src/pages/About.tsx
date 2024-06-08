@@ -1,23 +1,58 @@
 import { Box, Flex, keyframes } from '@chakra-ui/react'
 import { FaReact } from 'react-icons/fa'
+import Transfer from '@/components/Transfer'
 
 import { useAppSelector } from '@/store'
+import { TreeDataNode } from 'antd'
 
 const About = () => {
-  const { value } = useAppSelector(state => state.count)
-
-  const rotate = keyframes`
-    from { transform: rotate(0deg) }
-    to { transform: rotate(360deg) }
-  `
+  const treeData: TreeDataNode[] = [
+    {
+      title: '0-0',
+      key: '0-0',
+      children: [
+        {
+          title: '0-0-0',
+          key: '0-0-0',
+          children: [
+            { title: '0-0-0-0', key: '0-0-0-0' },
+            { title: '0-0-0-1', key: '0-0-0-1' },
+            { title: '0-0-0-2', key: '0-0-0-2' }
+          ]
+        },
+        {
+          title: '0-0-1',
+          key: '0-0-1',
+          children: [
+            { title: '0-0-1-0', key: '0-0-1-0' },
+            { title: '0-0-1-1', key: '0-0-1-1' },
+            { title: '0-0-1-2', key: '0-0-1-2' }
+          ]
+        },
+        {
+          title: '0-0-2',
+          key: '0-0-2'
+        }
+      ]
+    },
+    {
+      title: '0-1',
+      key: '0-1',
+      children: [
+        { title: '0-1-0-0', key: '0-1-0-0' },
+        { title: '0-1-0-1', key: '0-1-0-1' },
+        { title: '0-1-0-2', key: '0-1-0-2' }
+      ]
+    },
+    {
+      title: '0-2',
+      key: '0-2'
+    }
+  ]
 
   return (
     <Flex justify="center" align="center" direction="column" gap={10}>
-      <Box animation={`${rotate} 4s linear infinite`} h={50}>
-        <FaReact size={50} />
-      </Box>
-      <h1>Yu-React-template</h1>
-      <Box>redux count: {value}</Box>
+      <Transfer dataSource={treeData} />
     </Flex>
   )
 }
