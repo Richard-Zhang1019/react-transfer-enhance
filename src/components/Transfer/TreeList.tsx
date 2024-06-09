@@ -16,17 +16,22 @@ interface TreeListProps {
   /** tree data */
   data: TreeDataNode[]
   /** checked keys */
-  checkedKeys?: string[]
+  checkedKeys: string[]
+  /** check event */
+  onCheck?: (keys: any, info: any) => void
+  checkable?: boolean
 }
 
 const TreeList: FC<TreeListProps> = ({
   type,
   showSearch = false,
   showCheckAll = true,
-  data
+  data,
+  checkedKeys,
+  onCheck,
+  checkable = true
 }) => {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([])
-  const [checkedKeys, setCheckedKeys] = useState<string[]>([])
   const [selectedKeys, setSelectedKeys] = useState<string[]>([])
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true)
 
@@ -37,12 +42,6 @@ const TreeList: FC<TreeListProps> = ({
     // or, you can remove all expanded children keys.
     setExpandedKeys(expandedKeysValue)
     setAutoExpandParent(false)
-  }
-
-  // tree 受控选中
-  const onCheck: TreeProps['onCheck'] = checkedKeysValue => {
-    console.log('onCheck', checkedKeysValue)
-    setCheckedKeys(checkedKeysValue as React.Key[])
   }
 
   // tree 受控点击选择
@@ -63,17 +62,20 @@ const TreeList: FC<TreeListProps> = ({
             <Input allowClear prefix={<AiOutlineSearch />} />
           </div>
         )}
-        <Tree
-          checkable
-          onExpand={onExpand}
-          expandedKeys={expandedKeys}
-          autoExpandParent={autoExpandParent}
-          onCheck={onCheck}
-          checkedKeys={checkedKeys}
-          onSelect={onSelect}
-          selectedKeys={selectedKeys}
-          treeData={data}
-        />
+        <div className={styles.treeListContent}>
+          <Tree
+            checkable={checkable}
+            expandedKeys={expandedKeys}
+            autoExpandParent={autoExpandParent}
+            checkedKeys={checkedKeys}
+            onExpand={onExpand}
+            onCheck={onCheck}
+            onSelect={onSelect}
+            selectedKeys={selectedKeys}
+            treeData={data}
+            height={286}
+          />
+        </div>
       </div>
     </div>
   )

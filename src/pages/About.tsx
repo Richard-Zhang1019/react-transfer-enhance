@@ -1,12 +1,9 @@
-import { Box, Flex, keyframes } from '@chakra-ui/react'
-import { FaReact } from 'react-icons/fa'
+import { Flex } from '@chakra-ui/react'
 import Transfer from '@/components/Transfer'
-
-import { useAppSelector } from '@/store'
-import { TreeDataNode } from 'antd'
+import { DataProps } from '@/components/Transfer/utils'
 
 const About = () => {
-  const treeData: TreeDataNode[] = [
+  const treeData: DataProps[] = [
     {
       title: '0-0',
       key: '0-0',
