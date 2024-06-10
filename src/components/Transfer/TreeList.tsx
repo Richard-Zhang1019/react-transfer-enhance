@@ -27,6 +27,7 @@ interface TreeListProps {
   loadData?:
     | ((treeNode: EventDataNode<TreeDataNode>) => Promise<any>)
     | undefined
+  setLeftTree?: any
 }
 
 const TreeList: FC<TreeListProps> = ({
@@ -64,14 +65,9 @@ const TreeList: FC<TreeListProps> = ({
     console.log('onExpand', expandedKeysValue)
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.
     // or, you can remove all expanded children keys.
+    // @ts-ignore
     setExpandedKeys(expandedKeysValue)
     setAutoExpandParent(false)
-  }
-
-  // tree 受控点击选择
-  const onSelect: TreeProps['onSelect'] = (selectedKeysValue, info) => {
-    console.log('onSelect', info)
-    setSelectedKeys(selectedKeysValue)
   }
 
   return (
@@ -99,29 +95,34 @@ const TreeList: FC<TreeListProps> = ({
             checkedKeys={checkedKeys}
             onExpand={onExpand}
             onCheck={(keys, info) => {
-            	console.log('keys at line 101:', keys)
-              if (!info.node.isLoad && info.node.isLeaf === false) {
+              console.log('keys at line 101:', keys)
+              // @ts-ignore
+              if (!info.node?.isLoad && info.node.isLeaf === false) {
                 loadData?.(info.node).then(() => {
                   const keyList = [keys]
                   info.node.children?.forEach(i => {
+                    // @ts-ignore
                     keyList.push(i.key)
                   })
+                  // @ts-ignore
                   setLeftTree(val => ({
                     data: val.data,
                     checkedKeys: keyList.flat()
                   }))
                 })
               } else {
+                // @ts-ignore
                 setLeftTree(val => ({
                   ...val,
                   checkedKeys: keys
                 }))
               }
             }}
-            onSelect={onSelect}
             selectedKeys={selectedKeys}
             treeData={data}
+            // @ts-ignore
             loadData={node => {
+              // @ts-ignore
               if (node?.isLoad) {
                 return Promise.resolve()
               }
@@ -129,6 +130,7 @@ const TreeList: FC<TreeListProps> = ({
             }}
             height={286}
             titleRender={node => (
+              // @ts-ignore
               <TreeTitle type={type} node={node} onRemove={onRemove} />
             )}
           />

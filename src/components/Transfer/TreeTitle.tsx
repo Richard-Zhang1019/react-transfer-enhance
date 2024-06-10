@@ -5,7 +5,7 @@ import { Flex } from '@chakra-ui/react'
 
 interface TreeTitleProps {
   node: DataProps
-  onRemove: (key: string) => void
+  onRemove?: (key: string) => void
   type: 'left' | 'right'
 }
 
@@ -14,7 +14,7 @@ const TreeTitle: FC<TreeTitleProps> = ({ node, onRemove, type }) => {
     <Flex justify={'space-between'} width={'100%'} gap={20}>
       <div>{node.title}</div>
       {type === 'right' && (
-        <AiFillDelete size={20} onClick={() => onRemove(node.key)} />
+        <AiFillDelete size={20} onClick={() => onRemove?.(node.key)} />
       )}
     </Flex>
   )

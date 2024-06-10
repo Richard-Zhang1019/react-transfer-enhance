@@ -50,7 +50,6 @@ const Transfer: FC<TransferProps> = ({ dataSource }) => {
 
   const loadData = (node: DataProps) =>
     new Promise<void>(resolve => {
-      console.log('node at line 51:', node)
       if (node.isLoad) {
         resolve()
         return
@@ -62,9 +61,6 @@ const Transfer: FC<TransferProps> = ({ dataSource }) => {
               node.children = item.children
             }
           })
-          console.log(node)
-          console.log(leftTree.data.map(i => (i.key === node.key ? node : i)))
-          console.log('second')
           setLeftTree({
             ...leftTree,
             data: leftTree.data.map(i => (i.key === node.key ? node : i))
@@ -73,11 +69,7 @@ const Transfer: FC<TransferProps> = ({ dataSource }) => {
         }, 1000)
       }
     })
-  const a = keys => {
-    console.log('leftTree at line 77:', leftTree)
-    setLeftTree({ ...leftTree, checkedKeys: keys.flat() })
-  }
-  
+
   return (
     <div className={styles.transferWrap}>
       <TreeList
@@ -86,10 +78,11 @@ const Transfer: FC<TransferProps> = ({ dataSource }) => {
         showCheckAll
         data={leftTree.data}
         checkedKeys={leftTree.checkedKeys}
+        // @ts-ignore
         loadData={loadData}
-        onCheck={(keys: string[]) => {
-          a(keys)
-        }}
+        // onCheck={(keys: string[]) => {
+        //   a(keys)
+        // }}
         setLeftTree={setLeftTree}
       />
       <Button
