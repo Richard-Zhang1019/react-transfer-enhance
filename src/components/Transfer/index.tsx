@@ -7,8 +7,8 @@ import {
   DataProps,
   filterDataByKeys,
   getDataByKeys,
-  mergeDataList,
-  transferData
+  getDataByTitle,
+  mergeDataList
 } from './utils'
 
 interface TransferProps {
@@ -16,35 +16,68 @@ interface TransferProps {
 }
 
 const Transfer: FC<TransferProps> = ({ dataSource }) => {
-  const [leftTree, setLeftTree] = useState({
-    data: dataSource,
+  const [leftTree, setLeftTree] = useState<{
+    data: DataProps[]
+    checkedKeys: string[]
+  }>({
+    data: dataSource.map(i => ({ ...i, isLoad: false, children: [] })),
     checkedKeys: []
   })
-  const [rightTree, setRightTree] = useState({ data: [], checkedKeys: [] })
+  const [rightTree, setRightTree] = useState<DataProps[]>([])
   console.log('leftTree', leftTree)
   console.log('rightTree', rightTree)
   const onLeftToRight = () => {
-    console.log(mergeDataList(
-      rightTree.data,
-      getDataByKeys(leftTree.data, leftTree.checkedKeys)
-    ))
-    console.log(mergeDataList(
-      rightTree.data,
-      getDataByKeys(leftTree.data, leftTree.checkedKeys)
-    ))
-    setRightTree({
-      checkedKeys: [],
-      data: mergeDataList(
-        rightTree.data,
+    setRightTree(
+      mergeDataList(
+        rightTree,
         getDataByKeys(leftTree.data, leftTree.checkedKeys)
       )
-    })
+    )
     setLeftTree({
       checkedKeys: [],
       data: filterDataByKeys(leftTree.data, leftTree.checkedKeys)
     })
   }
 
+  const onRemove = (key: string) => {
+    console.log('key at line 47:', key)
+    setRightTree(filterDataByKeys(rightTree, [key]))
+    // setLeftTree({
+    //   checkedKeys: [],
+    //   data: filterDataByKeys(leftTree.data, leftTree.checkedKeys)
+    // })
+  }
+
+  const loadData = (node: DataProps) =>
+    new Promise<void>(resolve => {
+      console.log('node at line 51:', node)
+      if (node.isLoad) {
+        resolve()
+        return
+      } else {
+        setTimeout(() => {
+          node.isLoad = true
+          dataSource.forEach(item => {
+            if (item.key === node.key) {
+              node.children = item.children
+            }
+          })
+          console.log(node)
+          console.log(leftTree.data.map(i => (i.key === node.key ? node : i)))
+          console.log('second')
+          setLeftTree({
+            ...leftTree,
+            data: leftTree.data.map(i => (i.key === node.key ? node : i))
+          })
+          resolve()
+        }, 1000)
+      }
+    })
+  const a = keys => {
+    console.log('leftTree at line 77:', leftTree)
+    setLeftTree({ ...leftTree, checkedKeys: keys.flat() })
+  }
+  
   return (
     <div className={styles.transferWrap}>
       <TreeList
@@ -53,10 +86,11 @@ const Transfer: FC<TransferProps> = ({ dataSource }) => {
         showCheckAll
         data={leftTree.data}
         checkedKeys={leftTree.checkedKeys}
-        onCheck={(keys, node) => {
-          console.log('onCheck')
-          setLeftTree({ ...leftTree, checkedKeys: keys })
+        loadData={loadData}
+        onCheck={(keys: string[]) => {
+          a(keys)
         }}
+        setLeftTree={setLeftTree}
       />
       <Button
         type="primary"
@@ -69,8 +103,8 @@ const Transfer: FC<TransferProps> = ({ dataSource }) => {
         showSearch
         showCheckAll={false}
         checkable={false}
-        data={rightTree.data}
-        checkedKeys={rightTree.checkedKeys}
+        data={rightTree}
+        onRemove={onRemove}
       />
     </div>
   )

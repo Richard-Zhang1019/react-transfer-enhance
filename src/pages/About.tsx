@@ -5,45 +5,42 @@ import { DataProps } from '@/components/Transfer/utils'
 const About = () => {
   const treeData: DataProps[] = [
     {
-      title: '0-0',
-      key: '0-0',
+      title: '水果',
+      key: '水果',
+      isLeaf: false,
       children: [
         {
-          title: '0-0-0',
-          key: '0-0-0',
-          children: [
-            { title: '0-0-0-0', key: '0-0-0-0' },
-            { title: '0-0-0-1', key: '0-0-0-1' },
-            { title: '0-0-0-2', key: '0-0-0-2' }
-          ]
+          title: '苹果',
+          key: '苹果',
+          isLeaf: true
         },
         {
-          title: '0-0-1',
-          key: '0-0-1',
-          children: [
-            { title: '0-0-1-0', key: '0-0-1-0' },
-            { title: '0-0-1-1', key: '0-0-1-1' },
-            { title: '0-0-1-2', key: '0-0-1-2' }
-          ]
+          title: '香蕉',
+          key: '香蕉',
+          isLeaf: true
         },
         {
-          title: '0-0-2',
-          key: '0-0-2'
+          title: '梨',
+          key: '梨',
+          isLeaf: true
         }
       ]
     },
     {
-      title: '0-1',
-      key: '0-1',
+      title: '蔬菜',
+      key: '蔬菜',
+      isLeaf: false,
       children: [
-        { title: '0-1-0-0', key: '0-1-0-0' },
-        { title: '0-1-0-1', key: '0-1-0-1' },
-        { title: '0-1-0-2', key: '0-1-0-2' }
+        { title: '萝卜', key: '萝卜', isLeaf: true },
+        { title: '茄子', key: '茄子', isLeaf: true },
+        { title: '土豆', key: '土豆', isLeaf: true }
       ]
     },
     {
-      title: '0-2',
-      key: '0-2'
+      title: '肉',
+      key: '肉',
+      children: [],
+      isLeaf: false,
     }
   ]
 

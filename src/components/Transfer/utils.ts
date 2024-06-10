@@ -4,6 +4,7 @@ export interface DataProps {
   children?: DataProps[]
   isLoad?: boolean;
   oldTitle?: string;
+  isLeaf?: boolean;
 }
 
 /**
@@ -77,3 +78,22 @@ export const mergeDataList = (dataSource: DataProps[], data: DataProps[]): DataP
 export const sortDataList = (data: DataProps[]) => {
   return data.sort((a, b) => a.title.localeCompare(b.title))
 }
+
+export const getDataByTitle = (data: DataProps[], title: string): DataProps[] => {
+  const result: DataProps[] = [];
+  const parentKeys: string[] = [];
+
+  for (const node of data) {
+    if (node.title.includes(title)) {
+      result.push(node);
+    } else if (node.children) {
+      const childrenData = getDataByTitle(node.children, title);
+      if (childrenData.length > 0) {
+        const clonedNode = { ...node, children: childrenData };
+        result.push(clonedNode);
+        parentKeys.push(node.key);
+      }
+    }
+  }
+  return result
+};
