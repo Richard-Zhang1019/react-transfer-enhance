@@ -1,7 +1,6 @@
 {
-  "name": "yu-react-template",
-  "private": true,
-  "version": "0.0.0",
+  "name": "react-transfer-enhance",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
