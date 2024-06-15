@@ -12,8 +12,6 @@ interface TreeListProps {
   type: 'left' | 'right'
   /** whether to show search box */
   showSearch?: boolean
-  /** whether to show check all */
-  showCheckAll?: boolean
   /** custom action */
   action?: ReactNode
   /** tree data */
@@ -28,19 +26,20 @@ interface TreeListProps {
     | ((treeNode: EventDataNode<TreeDataNode>) => Promise<any>)
     | undefined
   setLeftTree?: any
+  titleRender: ReactNode
 }
 
 const TreeList: FC<TreeListProps> = ({
   type,
   showSearch = false,
-  showCheckAll = true,
   data,
   checkedKeys = [],
   onCheck,
   checkable = true,
   onRemove,
   loadData,
-  setLeftTree
+  setLeftTree,
+  titleRender,
 }) => {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([])
   const [selectedKeys, setSelectedKeys] = useState<string[]>([])
@@ -56,8 +55,8 @@ const TreeList: FC<TreeListProps> = ({
     },
     [searchValue],
     {
-      wait: 500
-    }
+      wait: 500,
+    },
   )
 
   // tree 受控展开
@@ -73,8 +72,7 @@ const TreeList: FC<TreeListProps> = ({
   return (
     <div className={styles.transferTreeListWrap}>
       <div className={styles.treeListHeader}>
-        {showCheckAll && <input type="checkbox" />}
-        <span>{type === 'left' ? 'Source' : 'Target'}</span>
+        {titleRender}
       </div>
       <div className={styles.treeListBody}>
         {showSearch && (
@@ -107,14 +105,14 @@ const TreeList: FC<TreeListProps> = ({
                   // @ts-ignore
                   setLeftTree(val => ({
                     data: val.data,
-                    checkedKeys: keyList.flat()
+                    checkedKeys: keyList.flat(),
                   }))
                 })
               } else {
                 // @ts-ignore
                 setLeftTree(val => ({
                   ...val,
-                  checkedKeys: keys
+                  checkedKeys: keys,
                 }))
               }
             }}
