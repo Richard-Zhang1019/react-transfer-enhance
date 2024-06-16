@@ -6,6 +6,7 @@ import styles from './styles.module.less'
 import {
   DataProps,
   filterDataByKeys,
+  filterEmptyNode,
   getDataByKeys,
   getDataByTitle,
   mergeDataList,
@@ -26,16 +27,26 @@ const Transfer: FC<TransferProps> = ({ dataSource }) => {
   })
   const [rightTree, setRightTree] = useState<DataProps[]>([])
 
+  // 移出右树全部
+  const onRemoveAll = () => {
+    setLeftTree({
+      ...leftTree,
+      data: mergeDataList(leftTree.data, rightTree),
+    })
+    setRightTree([])
+  }
+
   const titleRender = {
     left: <div>source</div>,
     right: (
-      <Flex justifyContent={'space-between'} alignItems={'center'}>
+      <Flex justify='space-between' onClick={onRemoveAll}>
         <div>target</div>
         <Typography.Link>删除全部</Typography.Link>
       </Flex>
     ),
   }
 
+  // 左树选中后 点击 button 右移
   const onLeftToRight = () => {
     setRightTree(
       mergeDataList(
@@ -49,17 +60,13 @@ const Transfer: FC<TransferProps> = ({ dataSource }) => {
     })
   }
 
+  // 删除右树节点
   const onRemove = (key: string) => {
-    console.log('key at line 47:', key)
-    setRightTree(filterDataByKeys(rightTree, [key]))
+    setRightTree(filterEmptyNode(filterDataByKeys(rightTree, [key])))
     setLeftTree({
       ...leftTree,
       data: mergeDataList(leftTree.data, getDataByKeys(rightTree, [key])),
     })
-    console.log(
-      'getDataByKeys(rightTree at line 57:',
-      getDataByKeys(rightTree, [key]),
-    )
   }
 
   const loadData = (node: DataProps) =>

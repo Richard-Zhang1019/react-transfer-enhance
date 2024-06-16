@@ -8,7 +8,7 @@ export interface DataProps {
 }
 
 /**
- * 传入 data 和要过滤掉的keys 返回过滤后的data
+ * 传入 data 和要过滤掉的 keys 返回过滤后的data
  */
 export const filterDataByKeys = (data: DataProps[], keys: string[]): DataProps[] => {
   const filteredData: DataProps[] = [];
@@ -31,7 +31,7 @@ export const filterDataByKeys = (data: DataProps[], keys: string[]): DataProps[]
 }
 
 /**
- * 传入 data 和要过滤掉的keys 返回传入keys的data
+ * 传入 data 和要得到的节点 key 返回传入 key 的 data
  */
 export const getDataByKeys = (data: DataProps[], keys: string[]): DataProps[] => {
   const result: DataProps[] = [];
@@ -53,9 +53,7 @@ export const getDataByKeys = (data: DataProps[], keys: string[]): DataProps[] =>
 };
 
 /**
- * 传入两个参数 返回合并后的数据
- * @param dataSource 数据源
- * @param data 合并到数据源的数据 
+ * 传入两个数据源 返回合并后的数据
  */
 export const mergeDataList = (dataSource: DataProps[], data: DataProps[]): DataProps[] => {
   const result: DataProps[] = [...dataSource];
@@ -75,10 +73,16 @@ export const mergeDataList = (dataSource: DataProps[], data: DataProps[]): DataP
   return sortDataList(result);
 }
 
+/**
+ * 传入 data 返回排序后的数据
+ */
 export const sortDataList = (data: DataProps[]) => {
   return data.sort((a, b) => a.title.localeCompare(b.title))
 }
 
+/**
+ * 传入 data 和要得到的节点 title 返回传入 title 的 data
+ */
 export const getDataByTitle = (data: DataProps[], title: string): DataProps[] => {
   const result: DataProps[] = [];
   const parentKeys: string[] = [];
@@ -97,3 +101,22 @@ export const getDataByTitle = (data: DataProps[], title: string): DataProps[] =>
   }
   return result
 };
+
+/**
+ * 传入 data 如果 data 的子元素为空则过滤掉
+ */
+export const filterEmptyNode = (data: DataProps[]): DataProps[] => {
+  const result: DataProps[] = [];
+
+  for (const node of data) {
+    const filteredNode = { ...node };
+
+    if (node.children?.length === 0) {
+      continue;
+    } else {
+      result.push(filteredNode);
+    }
+  }
+
+  return result;
+}

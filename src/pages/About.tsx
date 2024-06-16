@@ -37,9 +37,23 @@ const About = () => {
       ],
     },
     {
+      title: '炒菜',
+      key: '炒菜',
+      children: [
+        { title: '土豆炖牛肉', key: '土豆炖牛肉', isLeaf: true },
+        { title: '肉末茄子', key: '肉末茄子', isLeaf: true },
+        { title: '萝卜羊肉', key: '萝卜羊肉', isLeaf: true },
+      ],
+      isLeaf: false,
+    },
+    {
       title: '肉',
       key: '肉',
-      children: [],
+      children: [
+        { title: '牛肉', key: '牛肉', isLeaf: true },
+        { title: '猪肉', key: '猪肉', isLeaf: true },
+        { title: '羊肉', key: '羊肉', isLeaf: true },
+      ],
       isLeaf: false,
     },
   ]
