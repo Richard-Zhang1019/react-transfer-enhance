@@ -1,7 +1,6 @@
 import { FC, ReactNode, useState } from 'react'
 import { Input, Tree, TreeDataNode, TreeProps } from 'antd'
 import { AiOutlineSearch } from 'react-icons/ai'
-import { useDebounceEffect } from 'ahooks'
 import styles from './styles.module.less'
 import TreeTitle from './TreeTitle'
 import { EventDataNode } from 'antd/es/tree'
@@ -27,6 +26,9 @@ interface TreeListProps {
     | undefined
   setLeftTree?: any
   titleRender: ReactNode
+  searchValue: string
+  setSearchValue: (value: string) => void
+  restoreType: 'database' | 'table'
 }
 
 const TreeList: FC<TreeListProps> = ({
@@ -40,24 +42,13 @@ const TreeList: FC<TreeListProps> = ({
   loadData,
   setLeftTree,
   titleRender,
+  searchValue,
+  setSearchValue,
+  restoreType,
 }) => {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([])
   const [selectedKeys, setSelectedKeys] = useState<string[]>([])
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true)
-  const [searchValue, setSearchValue] = useState('')
-
-  useDebounceEffect(
-    () => {
-      console.log('searchValue', searchValue)
-      // 输入框清空
-      if (searchValue.trim() === '') {
-      }
-    },
-    [searchValue],
-    {
-      wait: 500,
-    },
-  )
 
   // tree 受控展开
   const onExpand: TreeProps['onExpand'] = expandedKeysValue => {
@@ -71,9 +62,7 @@ const TreeList: FC<TreeListProps> = ({
 
   return (
     <div className={styles.transferTreeListWrap}>
-      <div className={styles.treeListHeader}>
-        {titleRender}
-      </div>
+      <div className={styles.treeListHeader}>{titleRender}</div>
       <div className={styles.treeListBody}>
         {showSearch && (
           <div className={styles.treeListSearch}>

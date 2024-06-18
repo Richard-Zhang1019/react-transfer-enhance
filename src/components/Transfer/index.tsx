@@ -11,18 +11,34 @@ import {
   getDataByTitle,
   mergeDataList,
 } from './utils'
+import { useDebounceEffect } from 'ahooks'
 
 interface TransferProps {
   dataSource: DataProps[]
+  restoreType: 'database' | 'table'
 }
 
-const Transfer: FC<TransferProps> = ({ dataSource }) => {
+const Transfer: FC<TransferProps> = ({ dataSource, restoreType }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [leftTree, setLeftTree] = useState<{
     data: DataProps[]
     checkedKeys: string[]
   }>({
-    data: dataSource.map(i => ({ ...i, isLoad: false, children: [] })),
+    data: dataSource.map(i => ({
+      ...i,
+      isLoad: false,
+      ...(restoreType === 'database'
+        ? { isLeaf: true }
+        : { isLeaf: false, children: [] }),
+    })),
+    checkedKeys: [],
+  })
+  const [leftSearchValue, setLeftSearchValue] = useState('')
+  const [leftSearchTree, setLeftSearchTree] = useState<{
+    data: DataProps[]
+    checkedKeys: string[]
+  }>({
+    data: [],
     checkedKeys: [],
   })
   const [rightTree, setRightTree] = useState<DataProps[]>([])
@@ -39,7 +55,7 @@ const Transfer: FC<TransferProps> = ({ dataSource }) => {
   const titleRender = {
     left: <div>source</div>,
     right: (
-      <Flex justify='space-between' onClick={onRemoveAll}>
+      <Flex justify="space-between" onClick={onRemoveAll}>
         <div>target</div>
         <Typography.Link>删除全部</Typography.Link>
       </Flex>
@@ -93,6 +109,19 @@ const Transfer: FC<TransferProps> = ({ dataSource }) => {
       }
     })
 
+  useDebounceEffect(
+    () => {
+      console.log('leftSearchValue', leftSearchValue)
+      // 输入框清空
+      if (leftSearchValue.trim() === '') {
+      }
+    },
+    [leftSearchValue],
+    {
+      wait: 500,
+    },
+  )
+
   return (
     <Spin spinning={loading}>
       <div className={styles.transferWrap}>
@@ -102,8 +131,12 @@ const Transfer: FC<TransferProps> = ({ dataSource }) => {
           data={leftTree.data}
           checkedKeys={leftTree.checkedKeys}
           loadData={loadData}
+          onSearch={setLeftSearchValue}
           setLeftTree={setLeftTree}
           titleRender={titleRender.left}
+          searchValue={leftSearchValue}
+          setSearchValue={setLeftSearchValue}
+          restoreType={restoreType}
         />
         <Button
           type="primary"
@@ -118,6 +151,7 @@ const Transfer: FC<TransferProps> = ({ dataSource }) => {
           data={rightTree}
           onRemove={onRemove}
           titleRender={titleRender.right}
+          restoreType={restoreType}
         />
       </div>
     </Spin>

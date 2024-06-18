@@ -5,62 +5,122 @@ import { DataProps } from '@/components/Transfer/utils'
 const About = () => {
   const dataSource: DataProps[] = [
     {
-      title: '水果',
-      key: '水果',
+      title: '数据库A',
+      key: '数据库A',
+      type: 'database',
       isLeaf: false,
       children: [
         {
-          title: '苹果',
-          key: '苹果',
+          title: '表1',
+          key: '数据库A-表1',
           isLeaf: true,
+          type: 'table',
         },
         {
-          title: '香蕉',
-          key: '香蕉',
+          title: '表2',
+          key: '数据库A-表2',
           isLeaf: true,
+          type: 'table',
         },
         {
-          title: '梨',
-          key: '梨',
+          title: '表3',
+          key: '数据库A-表3',
           isLeaf: true,
+          type: 'table',
         },
       ],
     },
     {
-      title: '蔬菜',
-      key: '蔬菜',
+      title: '数据库B',
+      key: '数据库B',
+      type: 'database',
       isLeaf: false,
       children: [
-        { title: '萝卜', key: '萝卜', isLeaf: true },
-        { title: '茄子', key: '茄子', isLeaf: true },
-        { title: '土豆', key: '土豆', isLeaf: true },
+        {
+          title: '表4',
+          key: '数据库B-表4',
+          isLeaf: true,
+          type: 'table',
+        },
+        {
+          title: '表5',
+          key: '数据库B-表5',
+          isLeaf: true,
+          type: 'table',
+        },
+        {
+          title: '表6',
+          key: '数据库B-表6',
+          isLeaf: true,
+          type: 'table',
+        },
       ],
     },
     {
-      title: '炒菜',
-      key: '炒菜',
-      children: [
-        { title: '土豆炖牛肉', key: '土豆炖牛肉', isLeaf: true },
-        { title: '肉末茄子', key: '肉末茄子', isLeaf: true },
-        { title: '萝卜羊肉', key: '萝卜羊肉', isLeaf: true },
-      ],
+      title: '数据库C',
+      key: '数据库C',
+      type: 'database',
       isLeaf: false,
+      children: [
+        {
+          title: '表1',
+          key: '数据库C-表1',
+          isLeaf: true,
+          type: 'table',
+        },
+        {
+          title: '表2',
+          key: '数据库C-表2',
+          isLeaf: true,
+          type: 'table',
+        },
+        {
+          title: '表3',
+          key: '数据库C-表3',
+          isLeaf: true,
+          type: 'table',
+        },
+        {
+          title: '表7',
+          key: '数据库C-表7',
+          isLeaf: true,
+          type: 'table',
+        },
+        {
+          title: '表8',
+          key: '数据库C-表8',
+          isLeaf: true,
+          type: 'table',
+        },
+        {
+          title: '表9',
+          key: '数据库C-表9',
+          isLeaf: true,
+          type: 'table',
+        },
+        {
+          title: '表10',
+          key: '数据库C-表10',
+          isLeaf: true,
+          type: 'table',
+        },
+      ],
     },
     {
-      title: '肉',
-      key: '肉',
-      children: [
-        { title: '牛肉', key: '牛肉', isLeaf: true },
-        { title: '猪肉', key: '猪肉', isLeaf: true },
-        { title: '羊肉', key: '羊肉', isLeaf: true },
-      ],
+      title: '数据库D',
+      key: '数据库D',
+      type: 'database',
       isLeaf: false,
+      children: [],
     },
   ]
 
   return (
     <Flex justify="center" align="center" direction="column" gap={10}>
-      <Transfer dataSource={dataSource} />
+      <h3>库</h3>
+      <Transfer dataSource={dataSource} restoreType="database" />
+      <h3 style={{ marginTop: 48 }}>表</h3>
+      <Transfer dataSource={dataSource} restoreType="table" />
     </Flex>
   )
 }

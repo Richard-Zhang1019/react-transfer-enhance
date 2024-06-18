@@ -5,6 +5,7 @@ export interface DataProps {
   isLoad?: boolean;
   oldTitle?: string;
   isLeaf?: boolean;
+  type: 'database' | 'table';
 }
 
 /**
