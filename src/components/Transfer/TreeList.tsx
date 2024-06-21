@@ -29,6 +29,7 @@ interface TreeListProps {
   searchValue: string
   setSearchValue: (value: string) => void
   restoreType: 'database' | 'table'
+  onEdit?: (item: DataProps, val: string) => void
 }
 
 const TreeList: FC<TreeListProps> = ({
@@ -45,6 +46,7 @@ const TreeList: FC<TreeListProps> = ({
   searchValue,
   setSearchValue,
   restoreType,
+  onEdit
 }) => {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([])
   const [selectedKeys, setSelectedKeys] = useState<string[]>([])
@@ -83,7 +85,6 @@ const TreeList: FC<TreeListProps> = ({
             onExpand={onExpand}
             onCheck={(keys, info) => {
               console.log('keys at line 101:', keys)
-              // @ts-ignore
               if (!info.node?.isLoad && info.node.isLeaf === false) {
                 loadData?.(info.node).then(() => {
                   const keyList = [keys]
@@ -117,8 +118,7 @@ const TreeList: FC<TreeListProps> = ({
             }}
             height={286}
             titleRender={node => (
-              // @ts-ignore
-              <TreeTitle type={type} node={node} onRemove={onRemove} />
+              <TreeTitle type={type} node={node} onRemove={onRemove} onEdit={onEdit} />
             )}
           />
         </div>

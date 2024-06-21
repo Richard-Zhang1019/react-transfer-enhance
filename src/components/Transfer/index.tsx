@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, Key, useState } from 'react'
 import TreeList from './TreeList'
 import { AiFillCaretRight } from 'react-icons/ai'
 import { Button, Spin, Typography, Flex } from 'antd'
@@ -7,8 +7,10 @@ import {
   DataProps,
   filterDataByKeys,
   filterEmptyNode,
+  findDataByKey,
   getDataByKeys,
   getDataByTitle,
+  insertIntoArray,
   mergeDataList,
 } from './utils'
 import { useDebounceEffect } from 'ahooks'
@@ -41,6 +43,8 @@ const Transfer: FC<TransferProps> = ({ dataSource, restoreType }) => {
     data: [],
     checkedKeys: [],
   })
+  const [rightSearchValue, setRightSearchValue] = useState('')
+  const [rightSearchTree, setRightSearchTree] = useState<DataProps[]>([])
   const [rightTree, setRightTree] = useState<DataProps[]>([])
 
   // 移出右树全部
@@ -76,14 +80,82 @@ const Transfer: FC<TransferProps> = ({ dataSource, restoreType }) => {
     })
   }
 
-  // 删除右树节点
-  const onRemove = (key: string) => {
-    setRightTree(filterEmptyNode(filterDataByKeys(rightTree, [key])))
-    setLeftTree({
-      ...leftTree,
-      data: mergeDataList(leftTree.data, getDataByKeys(rightTree, [key])),
+  // 被重命名后的数据移动到左树时 清除重命名
+  const clearEditTitle = (data: DataProps[]) => {
+    return data.map(item => {
+      if (item.oldTitle) {
+        item.title = item.oldTitle
+        delete item.oldTitle
+      }
+      if (item.children) {
+        clearEditTitle(item.children)
+      }
+      return item
     })
   }
+
+  // 移除全部和单独移除
+  const onRemove = (type: 'all' | 'select', node?: DataProps) => {
+    if (rightTree.length === 0) return
+    if (type === 'all') {
+      setRightTree([])
+      setLeftTree({
+        checkedKeys: leftTree.checkedKeys,
+        data: clearEditTitle(dataSource),
+      })
+    } else if (type === 'select' && node) {
+      // 如果右树处于搜索状态 还需要将搜索列表同步去掉
+      if (rightSearchValue) {
+        setRightSearchTree(filterDataByKeys(rightSearchTree, [node.key]))
+      }
+      setRightTree(filterDataByKeys(rightTree, [node.key]))
+
+      // 调用函数插入数据
+      function insertByKey(keyToInsert: string) {
+        const { parent, item } = findDataByKey(dataSource, keyToInsert)
+        return insertIntoArray(leftTree.data, { parent, item })
+      }
+      setLeftTree({
+        ...leftTree,
+        data: clearEditTitle(
+          insertByKey(node.key)!.sort((a, b) => a.key.localeCompare(b.key)),
+        ),
+      })
+    }
+  }
+
+  // 重命名
+  const onEdit = (node: DataProps, title: string) => {
+    const findTreeTitle = (data: DataProps[], key: Key, title: string) => {
+      for (let i = 0; i < data.length; i++) {
+        const item = data[i]
+        if (item.key === key && item.title !== title) {
+          if (item.oldTitle) {
+            item.title = title
+          } else {
+            item.oldTitle = item.title
+            item.title = title
+          }
+          item.isNotUnique = false
+        } else {
+          if (item.children && item.children.length > 0) {
+            findTreeTitle(item.children, key, title)
+          }
+        }
+      }
+    }
+    findTreeTitle(rightTree, node.key, title)
+    setRightTree(rightTree)
+  }
+
+  // // 删除右树节点
+  // const onRemove = (key: string) => {
+  //   setRightTree(filterEmptyNode(filterDataByKeys(rightTree, [key])))
+  //   setLeftTree({
+  //     ...leftTree,
+  //     data: mergeDataList(leftTree.data, getDataByKeys(rightTree, [key])),
+  //   })
+  // }
 
   const loadData = (node: DataProps) =>
     new Promise<void>(resolve => {
@@ -152,6 +224,7 @@ const Transfer: FC<TransferProps> = ({ dataSource, restoreType }) => {
           onRemove={onRemove}
           titleRender={titleRender.right}
           restoreType={restoreType}
+          onEdit={onEdit}
         />
       </div>
     </Spin>

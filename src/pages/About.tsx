@@ -117,10 +117,8 @@ const About = () => {
 
   return (
     <Flex justify="center" align="center" direction="column" gap={10}>
-      <h3>库</h3>
+      
       <Transfer dataSource={dataSource} restoreType="database" />
-      <h3 style={{ marginTop: 48 }}>表</h3>
-      <Transfer dataSource={dataSource} restoreType="table" />
     </Flex>
   )
 }

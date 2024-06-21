@@ -1,11 +1,20 @@
 export interface DataProps {
+  /* 唯一key */
   key: string;
+  /* 展示的名称 */
   title: string;
-  children?: DataProps[]
-  isLoad?: boolean;
+  /* 重名后 旧名 */
   oldTitle?: string;
+  /* 类型 */
+  type: 'table' | 'database';
+  /* 如果 type 为 database 会有子集 */
+  children?: DataProps[];
+  /* 是否为子节点 */
   isLeaf?: boolean;
-  type: 'database' | 'table';
+  /* 是否已按需加载子集 */
+  isLoad?: boolean;
+  /* 是否重名 */
+  isNotUnique?: boolean;
 }
 
 /**
@@ -120,4 +129,63 @@ export const filterEmptyNode = (data: DataProps[]): DataProps[] => {
   }
 
   return result;
+}
+
+export const findDataByKey: (
+  data: DataProps[],
+  key: string,
+) => { parent: DataProps | null; item: DataProps | null } = (data, key) => {
+  let parent: DataProps | null = null;
+
+  for (const entry of data) {
+    // 检查当前元素是否是需要找的元素
+    if (entry.key === key) {
+      return { parent, item: entry };
+    }
+    // 如果当前元素有子元素，则在子元素中递归查找
+    if (entry.children) {
+      const result = findDataByKey(entry.children, key);
+      if (result.item) {
+        return { parent: entry, item: result.item };
+      }
+    }
+  }
+
+  return { parent: null, item: null };
+}
+
+export const insertIntoArray = (
+  targetArray: DataProps[],
+  { parent, item }: { parent: DataProps | null; item: DataProps | null },
+) => {
+  if (!item) {
+    return;
+  }
+  // 如果有父元素
+  if (parent) {
+    // 检查父元素是否已存在
+    const existingParent = targetArray.find(
+      (entry) => entry.key === parent.key,
+    );
+    if (existingParent) {
+      // 父元素存在，只需插入子元素
+      existingParent.children = existingParent.children || [];
+      if (
+        !existingParent.children.find((child) => child.key === item.key)
+      ) {
+        existingParent.children.push(item);
+        existingParent.children.sort((a, b) => a.key.localeCompare(b.key))
+      }
+    } else {
+      // 父元素不存在，先插入父元素，并将子元素插入其children数组
+      const newParent = { ...parent, children: [item] };
+      targetArray.push(newParent);
+    }
+  } else {
+    // 如果没有父元素
+    if (!targetArray.find((entry) => entry.key === item.key)) {
+      targetArray.push(item);
+    }
+  }
+  return targetArray
 }
