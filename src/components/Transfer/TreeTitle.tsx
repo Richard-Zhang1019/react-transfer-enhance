@@ -7,6 +7,8 @@ import { FaDatabase, FaTable, FaCheck } from 'react-icons/fa'
 import { CgRename } from 'react-icons/cg'
 import { IoCloseOutline } from 'react-icons/io5'
 
+import styles from './styles.module.less'
+
 interface TreeTitleProps {
   node: DataProps
   type: 'left' | 'right'
@@ -59,17 +61,17 @@ const TreeTitle: FC<TreeTitleProps> = ({ node, onRemove, type, onEdit }) => {
         <Flex justifyContent={'space-between'} gap={16}>
           <span
             style={{
-              width: node.type === 'table' ? 178 : 196,
+              width: node.type === 'table' ? 172 : 196,
               display: 'flex',
               alignItems: 'center',
             }}
           >
             {getIconType(node)}
             {node.oldTitle && type === 'right' ? (
-              <span style={{ display: 'flex', flexWrap: 'nowrap' }}>
+              <span style={{ display: 'flex', flexWrap: 'nowrap', alignItems: 'center' }}>
                 <Tooltip title={node.oldTitle}>
                   <span
-                    className="ellipsis"
+                    className={styles.ellipsis}
                     style={{
                       textDecoration: 'line-through',
                       maxWidth: 92,
@@ -82,7 +84,7 @@ const TreeTitle: FC<TreeTitleProps> = ({ node, onRemove, type, onEdit }) => {
                 </Tooltip>
                 <Tooltip title={node.title}>
                   <span
-                    className="ellipsis"
+                    className={styles.ellipsis}
                     style={{
                       maxWidth: 92,
                       color: node.isNotUnique ? 'red' : undefined,
