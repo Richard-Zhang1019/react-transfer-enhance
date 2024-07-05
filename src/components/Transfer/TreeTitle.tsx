@@ -33,7 +33,7 @@ const TreeTitle: FC<TreeTitleProps> = ({ node, onRemove, type, onEdit }) => {
   return (
     <span className="ob-edit-title">
       {isEdit ? (
-        <Flex gap={16}>
+        <Flex gap={16} alignItems={'center'}>
           <Input
             value={newVal}
             style={{ flex: 1, height: 24 }}
@@ -42,7 +42,7 @@ const TreeTitle: FC<TreeTitleProps> = ({ node, onRemove, type, onEdit }) => {
           <FaCheck
             style={{ color: 'rgba(115,209,61,1)' }}
             onClick={() => {
-              onEdit(node, newVal)
+              onEdit?.(node, newVal)
               setIsEdit(false)
             }}
           />
@@ -56,10 +56,10 @@ const TreeTitle: FC<TreeTitleProps> = ({ node, onRemove, type, onEdit }) => {
           />
         </Flex>
       ) : (
-        <span className="ob-transfer-tree-title">
+        <Flex justifyContent={'space-between'} gap={16}>
           <span
             style={{
-              width: node.type === 'table' ? 184 : 202,
+              width: node.type === 'table' ? 178 : 196,
               display: 'flex',
               alignItems: 'center',
             }}
@@ -95,7 +95,7 @@ const TreeTitle: FC<TreeTitleProps> = ({ node, onRemove, type, onEdit }) => {
             ) : (
               <span
                 style={{
-                  width: type === 'right' ? 186 : 226,
+                  width: type === 'right' ? 184 : 222,
                   textOverflow: 'ellipsis',
                   overflow: 'hidden',
                   whiteSpace: 'nowrap',
@@ -109,7 +109,7 @@ const TreeTitle: FC<TreeTitleProps> = ({ node, onRemove, type, onEdit }) => {
           </span>
 
           {type === 'right' && (
-            <span style={{ width: 48, display: 'flex' }}>
+            <span style={{ width: 48, display: 'flex', alignItems: 'center' }}>
               <CgRename onClick={() => setIsEdit(true)} />
               <AiFillDelete
                 onClick={() => onRemove('select', node)}
@@ -117,7 +117,7 @@ const TreeTitle: FC<TreeTitleProps> = ({ node, onRemove, type, onEdit }) => {
               />
             </span>
           )}
-        </span>
+        </Flex>
       )}
     </span>
   )

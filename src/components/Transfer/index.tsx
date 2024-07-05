@@ -13,7 +13,7 @@ import {
   insertIntoArray,
   mergeDataList,
 } from './utils'
-import { useDebounceEffect } from 'ahooks'
+import { useDebounceEffect, useUpdateEffect } from 'ahooks'
 
 interface TransferProps {
   dataSource: DataProps[]
@@ -30,11 +30,12 @@ const Transfer: FC<TransferProps> = ({ dataSource, restoreType }) => {
       ...i,
       isLoad: false,
       ...(restoreType === 'database'
-        ? { isLeaf: true }
+        ? { isLeaf: true, children: undefined }
         : { isLeaf: false, children: [] }),
     })),
     checkedKeys: [],
   })
+  console.log('leftTree at line 25:', leftTree.data)
   const [leftSearchValue, setLeftSearchValue] = useState('')
   const [leftSearchTree, setLeftSearchTree] = useState<{
     data: DataProps[]
@@ -148,15 +149,6 @@ const Transfer: FC<TransferProps> = ({ dataSource, restoreType }) => {
     setRightTree(rightTree)
   }
 
-  // // 删除右树节点
-  // const onRemove = (key: string) => {
-  //   setRightTree(filterEmptyNode(filterDataByKeys(rightTree, [key])))
-  //   setLeftTree({
-  //     ...leftTree,
-  //     data: mergeDataList(leftTree.data, getDataByKeys(rightTree, [key])),
-  //   })
-  // }
-
   const loadData = (node: DataProps) =>
     new Promise<void>(resolve => {
       if (node.isLoad) {
@@ -193,6 +185,19 @@ const Transfer: FC<TransferProps> = ({ dataSource, restoreType }) => {
       wait: 500,
     },
   )
+
+  useUpdateEffect(() => {
+    setLeftTree({
+      data: dataSource.map(node => ({
+        ...node,
+        ...(restoreType === 'database'
+          ? { isLeaf: true, children: undefined }
+          : { isLeaf: false, children: [] }),
+      })),
+      checkedKeys: [],
+    })
+    setRightTree([])
+  }, [restoreType])
 
   return (
     <Spin spinning={loading}>
